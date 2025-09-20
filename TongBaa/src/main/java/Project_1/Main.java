@@ -10,13 +10,15 @@ import java.util.*;
 public class Main {
     public static void main (String[] args)
     {
+        List<Room> rooms = new ArrayList<>();
+        List<Meal> meals = new ArrayList<>();
         //obj.input("item.xtxtx")
         //obj.input("discounts.xtxtx")
         //obj.input("bookings_errors.xtxtx")
     }
     
     //@Override for item.txt
-    public void input(String filename)
+    public void input(String filename, List<Room> rooms, List<Meal> meals)
     {
         
         String path = "src/main/Java/Project1/";
@@ -28,6 +30,8 @@ public class Main {
         String[] cols;
         String line;
         
+        
+        
         while(!canfind)
         try
         {
@@ -35,7 +39,7 @@ public class Main {
             canfind = true;
             System.out.println("Read from " + readfrom);
             System.out.println();
-            cols = new String[4];
+            cols = new String[3];
             
             if(scanfile.hasNextLine()) scanfile.nextLine(); //header
             
@@ -48,6 +52,20 @@ public class Main {
                 String code = cols[0].trim();
                 String name = cols[1].trim();
                 double unitprice = Double.parseDouble(cols[2].trim());
+                
+                if(code.toUpperCase().startsWith("R"))
+                {
+                    Room r = new Room(code, name, unitprice);
+                    rooms.add(r);
+                    r.getItem();
+                    
+                }
+                if(code.toUpperCase().startsWith("M"))
+                {
+                    Meal m = new Meal(code, name,unitprice);
+                    meals.add(m);
+                    m.getItem();
+                }
                 
             }
             
@@ -63,3 +81,49 @@ public class Main {
     }
     
     
+    //@Override for discounts.txt
+        public void input2(String filename)
+    {
+        
+        String path = "src/main/Java/Project1/";
+        File infile = new File(path + filename);
+        String readfrom = path + filename;
+        Scanner scanfile;
+        Scanner scannewfilename = new Scanner(System.in);
+        boolean canfind = false;
+        String[] cols;
+        String line;
+           
+        while(!canfind)
+        try
+        {
+            scanfile = new Scanner(infile);
+            canfind = true;
+            System.out.println("Read from " + readfrom);
+            System.out.println();
+            cols = new String[2];
+            
+            if(scanfile.hasNextLine()) scanfile.nextLine(); //header
+            
+            
+            while(scanfile.hasNext())
+            {
+                line = scanfile.nextLine();
+                cols = line.split(",");
+                
+                int bill = Integer.parseInt(cols[0].trim());
+                Double percent = Double.parseDouble(cols[1].trim());
+                Discount dis = new Discount(bill, percent);
+                dis.getDiscount(); 
+            }
+            
+        }
+        catch(FileNotFoundException ex)
+        {
+            System.out.println(ex);
+            System.out.println("Enter correct file name = ");
+            filename = scannewfilename.next();
+            System.out.println();
+            infile = new File(path + filename);
+        }
+    }
