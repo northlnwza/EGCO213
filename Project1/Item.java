@@ -4,11 +4,11 @@ package Project1;
 interface Room{
     double totalRoom();
     void printRoom();
-    double calculateRoom(String rooms, double days);
+    double getRoom();
 }
 interface Meal{
     void printMeal();
-    double calculateMeal(String meals, double unit);
+    double getMeal();
 }
 
 public class Item implements Room, Meal{
@@ -33,7 +33,7 @@ public class Item implements Room, Meal{
         System.out.printf("rate++ = %,9.2f\n",price);
     }
     @Override
-    public double calculateRoom(String rooms, double days){
+    public double getRoom(){
         return price;
     }
     @Override
@@ -41,7 +41,7 @@ public class Item implements Room, Meal{
         System.out.printf("%S, %-15s rate (per person per day) = %6.2f\n",code,name,price);
     }
     @Override
-    public double calculateMeal(String meals, double unit){
+    public double getMeal(){
         return price;
     }
 }

@@ -8,18 +8,19 @@ public class ItemMain {
 
     public static void main(String[] args) {
         
-        readFrom("items.txt");
+        List<Item> items = readItem("items.txt");
+        //readDiscount("discounts.txt");
         
     }
     
-    static void readFrom(String filename){
+    static List<Item> readItem(String filename){
 
         //String path = "src/main/java/Project1/";
         String path = "src/Project1/";
         File file = new File(path+filename);
         System.out.println("Read from "+path+filename);
+        List<Item> items = new ArrayList<>();
         try ( Scanner iscan = new Scanner(file) ) {
-            List<Item> items = new ArrayList<>();
             iscan.nextLine();                                   //skip first line
             while(iscan.hasNext()) {
                 String line = iscan.nextLine(); 
@@ -42,5 +43,27 @@ public class ItemMain {
         catch (Exception e) {
             e.printStackTrace();
         }
+        return items;
     }
+    /*
+    static void readDiscount(String filename){
+
+        //String path = "src/main/java/Project1/";
+        String path = "src/Project1/";
+        File file = new File(path+filename);
+        System.out.println("Read from "+path+filename);
+        try ( Scanner iscan = new Scanner(file) ) {
+            iscan.nextLine();                                   //skip first line
+            while(iscan.hasNext()) {
+                String line = iscan.nextLine(); 
+                String []cols = line.split(","); 
+                String code = cols[0].trim();
+                String name = cols[1].trim();
+                 
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }*/
 }
