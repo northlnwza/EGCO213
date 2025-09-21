@@ -12,6 +12,8 @@ public class Main {
     {
         List<Room> rooms = new ArrayList<>();
         List<Meal> meals = new ArrayList<>();
+        List<Discount> discounts = new ArrayList<>();
+        
         //obj.input("item.xtxtx")
         //obj.input("discounts.xtxtx")
         //obj.input("bookings_errors.xtxtx")
@@ -81,49 +83,4 @@ public class Main {
     }
     
     
-    //@Override for discounts.txt
-        public void input2(String filename)
-    {
-        
-        String path = "src/main/Java/Project1/";
-        File infile = new File(path + filename);
-        String readfrom = path + filename;
-        Scanner scanfile;
-        Scanner scannewfilename = new Scanner(System.in);
-        boolean canfind = false;
-        String[] cols;
-        String line;
-           
-        while(!canfind)
-        try
-        {
-            scanfile = new Scanner(infile);
-            canfind = true;
-            System.out.println("Read from " + readfrom);
-            System.out.println();
-            cols = new String[2];
-            
-            if(scanfile.hasNextLine()) scanfile.nextLine(); //header
-            
-            
-            while(scanfile.hasNext())
-            {
-                line = scanfile.nextLine();
-                cols = line.split(",");
-                
-                int bill = Integer.parseInt(cols[0].trim());
-                Double percent = Double.parseDouble(cols[1].trim());
-                Discount dis = new Discount(bill, percent);
-                dis.getDiscount(); 
-            }
-            
-        }
-        catch(FileNotFoundException ex)
-        {
-            System.out.println(ex);
-            System.out.println("Enter correct file name = ");
-            filename = scannewfilename.next();
-            System.out.println();
-            infile = new File(path + filename);
-        }
-    }
+    
