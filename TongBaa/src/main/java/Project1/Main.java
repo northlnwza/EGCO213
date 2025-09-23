@@ -8,37 +8,37 @@ import java.util.*;
  * @thanakrit 6713118 
  */
 
-
-class CBooking
-{
-	private	String	B_id;
-	private	String	C_id;
-	private	double	totalprice;
-
-	public String getbid()
-	{
-		return (this.B_id);
-	}
-	public String getcid()
-	{
-		return (this.C_id);
-	}
-	public double gettp()
-	{
-		return (this.totalprice);
-	}
-        public  double newtp(double tp)
-        {
-                this.totalprice = tp;
-                return (this.totalprice);
-        }
-	public	CBooking(String b, String c, double p)
-	{
-		this.B_id = b;
-		this.C_id = c;
-		this.totalprice = p;
-	}
-}
+//
+//class CBooking
+//{
+//	private	String	B_id;
+//	private	String	C_id;
+//	private	double	totalprice;
+//
+//	public String getbid()
+//	{
+//		return (this.B_id);
+//	}
+//	public String getcid()
+//	{
+//		return (this.C_id);
+//	}
+//	public double gettp()
+//	{
+//		return (this.totalprice);
+//	}
+//        public  double newtp(double tp)
+//        {
+//                this.totalprice = tp;
+//                return (this.totalprice);
+//        }
+//	public	CBooking(String b, String c, double p)
+//	{
+//		this.B_id = b;
+//		this.C_id = c;
+//		this.totalprice = p;
+//	}
+//}
 
 class   Record implements Comparable<Record>
 {
@@ -46,6 +46,7 @@ class   Record implements Comparable<Record>
 	private double  ta;
 	private String  bookings;
 
+        @Override
 	public	int compareTo(Record other)
 	{
 		if (this.ta < other.ta)
@@ -75,7 +76,7 @@ class   Record implements Comparable<Record>
 }
 class Customer
 {
-	public	ArrayList<CBooking> BL_file;
+	//public	ArrayList<CBooking> BL_file;
 	public	ArrayList<String> cid;
 	public	ArrayList<Record> rec;
         
@@ -100,112 +101,116 @@ class Customer
 		int	j;
 		int	count;
                 ArrayList<CustomerTotal> sumcus;
-		CBooking	obj2;
+		//CBooking	obj2;
+                CustomerTotal obj2;
 
-		this.readcid("bookings.txt");
+		//this.readcid("bookings.txt");
 		this.cid = new ArrayList<String>();
 		this.rec = new ArrayList<Record>();
                 sumcus = new ArrayList<CustomerTotal>();
                 sumcus = gettotalamount();
-		for (CBooking obj1 : this.BL_file)
+		for (CustomerTotal obj1 : sumcus)
 		{
-			if (!this.cid.contains(obj1.getcid()))
+			if (!this.cid.contains(obj1.getName()))
 			{
 				String	gcid;
-				double	t_a;	
+				double	t_a;
+                                String  abid;
 				StringBuilder	bk;
 
 				gcid = "";
 				t_a = 0;
-        			this.cid.add(obj1.getcid());
+                                abid = "";
+        			this.cid.add(obj1.getName());
 				bk = new StringBuilder();
 				bk.append("[");
                                 int k;
                                 k = 0;
                                 while (k < sumcus.size())
                                 {
-                                    if (sumcus.get(k).getName().equals(obj1.getcid()))
+                                    if (sumcus.get(k).getName().equals(obj1.getName()))
                                     {
-					gcid = obj1.getcid();	
+					gcid = obj1.getName();	
 					t_a = obj1.newtp(sumcus.get(k).getTotal());
+                                        abid = obj1.getBid();
                                     }
                                     k++;
                                 }
 				j = 0;
-				count = 0;
-				while (j < this.BL_file.size())
-				{
-					obj2 = this.BL_file.get(j);
-					if ((obj2.getcid()).equals(obj1.getcid()))
-						count++;	
-					j++;	
-				}
-				i = 0;
-				j = 0;
-				while (i < this.BL_file.size())
-				{
-					obj2 = this.BL_file.get(i);
-					if ((obj2.getcid()).equals(obj1.getcid()))
-					{
-						bk.append(obj2.getbid());
-						if (j + 1 < count)
-						{
-							bk.append(" , ");
-						}
-						j++;
-					}
-					i++;
-				}
-				bk.append("]");
-				this.rec.add(new Record(gcid, t_a, bk.toString()));
+//				count = 0;
+//				while (j < sumcus.size())
+//				{
+//					obj2 = sumcus.get(j);
+//					if ((obj2.getName()).equals(obj1.getName()))
+//						count++;	
+//					j++;	
+//				}
+//				i = 0;
+//				j = 0;
+//				while (i < sumcus.size())
+//				{
+//					obj2 = sumcus.get(i);
+//					if ((obj2.getName()).equals(obj1.getName()))
+//					{
+//						bk.append(obj2.getBid());
+//						if (j + 1 < count)
+//						{
+//							bk.append(" , ");
+//						}
+//						j++;
+//					}
+//					i++;
+//				}
+//				bk.append("]");
+				this.rec.add(new Record(gcid, t_a, abid));
 			}
 		}
 	}
 
-	public void readcid(String filename)
-	{
-		Scanner	scan;
-		Scanner keyboardScan;
-		CBooking	b;
-		String	path;
-		String	cols[];
-		String	line;
-		boolean	opensuccess;
-		int	i;
-
-		opensuccess = false;
-		while (!opensuccess)
-		{
-			try
-			{
-				path = "src/main/Java/Project1/";
-				scan = new Scanner(new File(path + filename));
-				opensuccess = true;
-				i = 0;
-				this.BL_file = new ArrayList<CBooking>();
-				cols = new String[6];
-				while (scan.hasNext())
-				{
-					line = scan.nextLine();		
-					if (i != 0)
-					{
-						//play some try catch input here
-						cols = line.split(",");
-						b = new CBooking(cols[0].trim(), cols[1].trim(), 0);
-						(this.BL_file).add(b);
-					}
-					i++;
-				}
-			}
-			catch (FileNotFoundException e)
-			{
-				keyboardScan = new Scanner(System.in);
-				System.out.print(e + " --> ");
-                        	System.out.println("New file name = ");
-                        	filename = keyboardScan.next();
-			}
-		}
-	}
+//	public void readcid(String filename)
+//	{
+//		Scanner	scan;
+//		Scanner keyboardScan;
+//		CBooking	b;
+//		String	path;
+//		String	cols[];
+//		String	line;
+//		boolean	opensuccess;
+//		int	i;
+//
+//		opensuccess = false;
+//		while (!opensuccess)
+//		{
+//			try
+//			{
+//				path = "src/main/Java/Project1/";
+//				scan = new Scanner(new File(path + filename));
+//				opensuccess = true;
+//				i = 0;
+//				this.BL_file = new ArrayList<CBooking>();
+//				cols = new String[6];
+//				while (scan.hasNext())
+//				{
+//					line = scan.nextLine();		
+//					if (i != 0)
+//					{
+//						//play some try catch input here
+//						cols = line.split(",");
+//						b = new CBooking(cols[0].trim(), cols[1].trim(), 0);
+//						(this.BL_file).add(b);
+//					}
+//					i++;
+//				}
+//			}
+//			catch (FileNotFoundException e)
+//			{
+//				keyboardScan = new Scanner(System.in);
+//				System.out.print(e + " --> ");
+//                        	System.out.println("New file name = ");
+//                        	filename = keyboardScan.next();
+//			}
+//		}
+//	}
         public ArrayList<CustomerTotal> gettotalamount()
         {
                 List<CustomerTotal> customerSum;
@@ -221,33 +226,55 @@ class Customer
                 sumcus = new ArrayList<CustomerTotal>();
                 cid = new ArrayList<String>();
                 double  sum;
+                StringBuilder   ABID;
+                int count;
+                
+                
                 while (i < customerSum.size())
                 {
-                    j = 0;
+  
                     sum = 0;
-                    
+                    ABID = new StringBuilder();
+                    ABID.append("[");
+                   
+                    j = 0;
+                    count = 0;
                     while (j < customerSum.size())
                     {
+                       if (customerSum.get(i).getName().equals(customerSum.get(j).getName()))
+				count++;	
+			j++;	
+                    }
+                     j = 0;
+                     int k;
+                        k = 0;
+                    while (j < customerSum.size())
+                    { 
+                        
                            if (customerSum.get(i).getName().equals(customerSum.get(j).getName()))
                            {
                               sum = sum + customerSum.get(j).getTotal();
-                              
+                              ABID.append(customerSum.get(j).getBid());
+                              if (k + 1 < count)
+				ABID.append(" , ");
+                              k++;
                            }
                        j++;
                     }
+                    ABID.append("]");
                     if(!cid.contains(customerSum.get(i).getName()))
                     {
-                        sumcus.add(new CustomerTotal(customerSum.get(i).getName(), sum));
+                        sumcus.add(new CustomerTotal(customerSum.get(i).getName(), sum, ABID.toString()));
                         cid.add(customerSum.get(i).getName());
                     }
-                    //System.out.printf("%s %s\n",customerSum.get(i).getName(), customerSum.get(i).getTotal());
+                  // System.out.printf("%s %s %s\n",customerSum.get(i).getName(), customerSum.get(i).getBid(), customerSum.get(i).getTotal());
                     i++;
                 }
-                //System.out.printf("-------\n");
+              //  System.out.printf("-------\n");
                 i = 0;
                 while (i < sumcus.size())
                 {
-                   //System.out.printf("%s %.2f\n", sumcus.get(i).getName(), sumcus.get(i).getTotal());
+                  // System.out.printf("%s %s %.2f\n", sumcus.get(i).getName(),sumcus.get(i).getBid(), sumcus.get(i).getTotal());
                     i++;
                 }
                 return (sumcus);
@@ -262,6 +289,7 @@ public class Main
                 
 		C = new Customer();
 		C.summary();
+                
 	}
     
 }

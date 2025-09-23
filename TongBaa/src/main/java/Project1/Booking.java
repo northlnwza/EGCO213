@@ -36,7 +36,7 @@ public class Booking
             discount = calculateDiscount(subtotal);
             totalAmount = printBookingProcess(info, totalRoomPrice, totalMeal, discount);
            // customerSum.add(new CustomerTotal(info[1], totalAmount));
-           customerSum.add(new CustomerTotal(info[1], subtotal));
+           customerSum.add(new CustomerTotal(info[1], subtotal, info[0]));
             lineNum++;
         }
     }
