@@ -1,86 +1,292 @@
+
 package Project1;
 
+import static Project1.ItemMain.readItem;
 import java.io.*;
 import java.util.*;
 
-/**
- *
- * @author NP
- */
-public class Main {
-    public static void main (String[] args)
-    {
-        List<Room> rooms = new ArrayList<>();
-        List<Meal> meals = new ArrayList<>();
-        List<Discount> discounts = new ArrayList<>();
+//
+//class CBooking
+//{
+//	private	String	B_id;
+//	private	String	C_id;
+//	private	double	totalprice;
+//
+//	public String getbid()
+//	{
+//		return (this.B_id);
+//	}
+//	public String getcid()
+//	{
+//		return (this.C_id);
+//	}
+//	public double gettp()
+//	{
+//		return (this.totalprice);
+//	}
+//        public  double newtp(double tp)
+//        {
+//                this.totalprice = tp;
+//                return (this.totalprice);
+//        }
+//	public	CBooking(String b, String c, double p)
+//	{
+//		this.B_id = b;
+//		this.C_id = c;
+//		this.totalprice = p;
+//	}
+//}
+
+class   Record implements Comparable<Record>
+{
+	private String  cid;
+	private double  ta;
+	private String  bookings;
+
+        @Override
+	public	int compareTo(Record other)
+	{
+		if (this.ta < other.ta)
+			return (1);
+		else if (this.ta > other.ta)
+			return (-1);
+		return (0);
+	}
+	public	Record(String c, double t, String b)
+	{
+		this.cid=  c;
+		this.ta=  t;
+		this.bookings = b;
+	}
+	public String getcid()
+	{
+		return (this.cid);
+	}
+	public double getta()
+	{
+		return (this.ta);
+	}
+	public String getb()
+	{
+		return (this.bookings);
+	}
+}
+class Customer
+{
+	//public	ArrayList<CBooking> BL_file;
+	public	ArrayList<String> cid;
+	public	ArrayList<Record> rec;
         
-        //obj.input("item.xtxtx")
-        //obj.input("discounts.xtxtx")
-        //obj.input("bookings_errors.xtxtx")
-    }
-    
-    //@Override for item.txt
-    public void input(String filename, List<Room> rooms, List<Meal> meals)
-    {
-        
-        String path = "src/main/Java/Project1/";
-        File infile = new File(path + filename);
-        String readfrom = path + filename;
-        Scanner scanfile;
-        Scanner scannewfilename = new Scanner(System.in);
-        boolean canfind = false;
-        String[] cols;
-        String line;
-        
-        
-        
-        while(!canfind)
-        try
+
+	public	void summary() throws Booking.InvalidFormatException
+	{
+		int	i;
+		
+		this.getcus();
+		Collections.sort(this.rec);
+		i = 0;	
+		System.out.printf("\n===== Customer Summary =====\n");
+		while (i < this.rec.size())
+		{
+			System.out.printf("%-3s  >>  total amount =  %,12.2f    bookings = %s\n",this.rec.get(i).getcid(), this.rec.get(i).getta(), this.rec.get(i).getb());
+			i++;
+		}
+	}
+	public	void getcus() throws Booking.InvalidFormatException
+	{
+		int	i;
+		int	j;
+		int	count;
+                ArrayList<CustomerTotal> sumcus;
+		//CBooking	obj2;
+                CustomerTotal obj2;
+
+		//this.readcid("bookings.txt");
+		this.cid = new ArrayList<String>();
+		this.rec = new ArrayList<Record>();
+                sumcus = new ArrayList<CustomerTotal>();
+                sumcus = gettotalamount();
+		for (CustomerTotal obj1 : sumcus)
+		{
+			if (!this.cid.contains(obj1.getName()))
+			{
+				String	gcid;
+				double	t_a;
+                                String  abid;
+				StringBuilder	bk;
+
+				gcid = "";
+				t_a = 0;
+                                abid = "";
+        			this.cid.add(obj1.getName());
+				bk = new StringBuilder();
+				bk.append("[");
+                                int k;
+                                k = 0;
+                                while (k < sumcus.size())
+                                {
+                                    if (sumcus.get(k).getName().equals(obj1.getName()))
+                                    {
+					gcid = obj1.getName();	
+					t_a = obj1.newtp(sumcus.get(k).getTotal());
+                                        abid = obj1.getBid();
+                                    }
+                                    k++;
+                                }
+				j = 0;
+//				count = 0;
+//				while (j < sumcus.size())
+//				{
+//					obj2 = sumcus.get(j);
+//					if ((obj2.getName()).equals(obj1.getName()))
+//						count++;	
+//					j++;	
+//				}
+//				i = 0;
+//				j = 0;
+//				while (i < sumcus.size())
+//				{
+//					obj2 = sumcus.get(i);
+//					if ((obj2.getName()).equals(obj1.getName()))
+//					{
+//						bk.append(obj2.getBid());
+//						if (j + 1 < count)
+//						{
+//							bk.append(" , ");
+//						}
+//						j++;
+//					}
+//					i++;
+//				}
+//				bk.append("]");
+				this.rec.add(new Record(gcid, t_a, abid));
+			}
+		}
+	}
+
+//	public void readcid(String filename)
+//	{
+//		Scanner	scan;
+//		Scanner keyboardScan;
+//		CBooking	b;
+//		String	path;
+//		String	cols[];
+//		String	line;
+//		boolean	opensuccess;
+//		int	i;
+//
+//		opensuccess = false;
+//		while (!opensuccess)
+//		{
+//			try
+//			{
+//				path = "src/main/Java/Project1/";
+//				scan = new Scanner(new File(path + filename));
+//				opensuccess = true;
+//				i = 0;
+//				this.BL_file = new ArrayList<CBooking>();
+//				cols = new String[6];
+//				while (scan.hasNext())
+//				{
+//					line = scan.nextLine();		
+//					if (i != 0)
+//					{
+//						//play some try catch input here
+//						cols = line.split(",");
+//						b = new CBooking(cols[0].trim(), cols[1].trim(), 0);
+//						(this.BL_file).add(b);
+//					}
+//					i++;
+//				}
+//			}
+//			catch (FileNotFoundException e)
+//			{
+//				keyboardScan = new Scanner(System.in);
+//				System.out.print(e + " --> ");
+//                        	System.out.println("New file name = ");
+//                        	filename = keyboardScan.next();
+//			}
+//		}
+//	}
+        public ArrayList<CustomerTotal> gettotalamount() throws Booking.InvalidFormatException
         {
-            scanfile = new Scanner(infile);
-            canfind = true;
-            System.out.println("Read from " + readfrom);
-            System.out.println();
-            cols = new String[3];
-            
-            if(scanfile.hasNextLine()) scanfile.nextLine(); //header
-            
-            
-            while(scanfile.hasNext())
-            {
-                line = scanfile.nextLine();
-                cols = line.split(",");
+                List<CustomerTotal> customerSum;
                 
-                String code = cols[0].trim();
-                String name = cols[1].trim();
-                double unitprice = Double.parseDouble(cols[2].trim());
+                Booking test = new Booking();
+                test.bookingProcess();
+                customerSum = test.getCustomerSummary();
+                int i;
+                int j;
+                i = 0;
+                ArrayList<CustomerTotal>   sumcus;
+                ArrayList<String>   cid;
+                sumcus = new ArrayList<CustomerTotal>();
+                cid = new ArrayList<String>();
+                double  sum;
+                StringBuilder   ABID;
+                int count;
                 
-                if(code.toUpperCase().startsWith("R"))
+                
+                while (i < customerSum.size())
                 {
-                    Room r = new Room(code, name, unitprice);
-                    rooms.add(r);
-                    r.getItem();
-                    
+  
+                    sum = 0;
+                    ABID = new StringBuilder();
+                    ABID.append("[");
+                   
+                    j = 0;
+                    count = 0;
+                    while (j < customerSum.size())
+                    {
+                       if (customerSum.get(i).getName().equals(customerSum.get(j).getName()))
+				count++;	
+			j++;	
+                    }
+                     j = 0;
+                     int k;
+                        k = 0;
+                    while (j < customerSum.size())
+                    { 
+                        
+                           if (customerSum.get(i).getName().equals(customerSum.get(j).getName()))
+                           {
+                              sum = sum + customerSum.get(j).getTotal();
+                              ABID.append(customerSum.get(j).getBid());
+                              if (k + 1 < count)
+				ABID.append(" , ");
+                              k++;
+                           }
+                       j++;
+                    }
+                    ABID.append("]");
+                    if(!cid.contains(customerSum.get(i).getName()))
+                    {
+                        sumcus.add(new CustomerTotal(customerSum.get(i).getName(), sum, ABID.toString()));
+                        cid.add(customerSum.get(i).getName());
+                    }
+                  // System.out.printf("%s %s %s\n",customerSum.get(i).getName(), customerSum.get(i).getBid(), customerSum.get(i).getTotal());
+                    i++;
                 }
-                if(code.toUpperCase().startsWith("M"))
+              //  System.out.printf("-------\n");
+                i = 0;
+                while (i < sumcus.size())
                 {
-                    Meal m = new Meal(code, name,unitprice);
-                    meals.add(m);
-                    m.getItem();
+                  // System.out.printf("%s %s %.2f\n", sumcus.get(i).getName(),sumcus.get(i).getBid(), sumcus.get(i).getTotal());
+                    i++;
                 }
+                return (sumcus);
+        }
+}
+
+public class Main 
+{
+	public	static void main(String[] args) throws Booking.InvalidFormatException
+	{
+		Customer	C;
                 
-            }
-            
-        }
-        catch(FileNotFoundException ex)
-        {
-            System.out.println(ex);
-            System.out.println("Enter correct file name = ");
-            filename = scannewfilename.next();
-            System.out.println();
-            infile = new File(path + filename);
-        }
-    }
+		C = new Customer();
+		C.summary();
+                
+	}
     
-    
-    
+}

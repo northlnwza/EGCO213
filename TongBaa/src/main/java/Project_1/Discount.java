@@ -25,7 +25,7 @@ public class Discount {
         System.out.println(String.format("If total bill >= %,10d   discount = %5.1f%%",
                 getSubtotal(), getPercent()));
     }
-    public void input2(String filename, List<Discount> discounts)
+    public static void input2(String filename, List<Discount> discounts)
     {
         
         String path = "src/main/Java/Project1/";
