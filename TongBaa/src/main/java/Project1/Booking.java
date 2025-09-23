@@ -1,9 +1,6 @@
 package Project1;
 
-/**
- *
- * @author thanakrit & purinut
- */
+
 import java.util.*;
 import java.io.*;
 
@@ -16,29 +13,85 @@ public class Booking
     public Booking() {
         discounts = new ArrayList<Discount>();
         customerSum = new ArrayList<CustomerTotal>();
-        items = ItemMain.readItem("items.txt");
-        Discount.input2("discounts.txt", discounts); 
+        items = ItemMain.readItem("item.txt");
+        Discount.input2("discount.txt", discounts); 
     }
     
-    public void bookingProcess() {
+    public void bookingProcess() throws InvalidFormatException {
         int lineNum = 1;
         String info[];
         double totalRoomPrice = 0, totalMeal = 0, subtotal = 0, discount = 0, totalAmount = 0;
-        Scanner scan;
         
+        Scanner scan;
         scan = getValidFileScanner();
-        System.out.println("\n===== Booking Processing =====");
+        boolean  headerPrinted = false;
+        
         while(true) {
             if((info = readBookingInput(lineNum, scan)) == null) break;
+             
+            try
+            {
+            
+                if (info.length != 6) {
+            
+                throw new NumberFormatException("For input string: \"" + info[4] + "\"");
+                }
+                
+            
             totalRoomPrice = calculateTotalRoom(info[3], info[2]);
             totalMeal = calculateTotalMeal(info[5], info[2], info[4]);
             subtotal = totalRoomPrice + totalMeal;
             discount = calculateDiscount(subtotal);
-            totalAmount = printBookingProcess(info, totalRoomPrice, totalMeal, discount);
-           // customerSum.add(new CustomerTotal(info[1], totalAmount));
-           customerSum.add(new CustomerTotal(info[1], subtotal, info[0]));
-            lineNum++;
-        }
+            
+            if (!headerPrinted) {
+            System.out.println("\n===== Booking Processing =====");
+            headerPrinted = true;
+}
+            totalAmount = printBookingProcess(info, totalRoomPrice, totalMeal, discount);//=================
+            // customerSum.add(new CustomerTotal(info[1], totalAmount));
+            customerSum.add(new CustomerTotal(info[1], subtotal, info[0]));
+            
+            }
+            catch (InvalidFormatException e)
+            {
+                System.err.println("Project1.InvalidFormatException: " + e.getMessage());
+                System.err.printf("%s, %8s, %8s, %9s, %16s,  %10s     skip\n",
+                info[0], info[1], info[2], info[3], info[4], info[5]);
+                lineNum++;
+                continue;
+            }
+            catch (InvalidInputException e)
+            {
+                System.err.println("Project1.InvalidInputException: " + e.getMessage());
+                System.err.printf("%s, %8s, %8s, %9s, %16s,  %10s     skip\n",
+                info[0], info[1], info[2], info[3], info[4], info[5]);
+                lineNum++;
+                continue;
+            }
+            catch (Exception e)
+            {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                    
+            if (info.length != 6) {
+    
+                String[] newInfo = new String[6];   
+                System.arraycopy(info, 0, newInfo, 0, 4);
+                newInfo[4] = "   ";
+                newInfo[5] = info[4];
+                info = newInfo;
+                System.err.printf("%s, %8s, %8s, %9s, %16s   %10s     skip\n",
+                info[0], info[1], info[2], info[3], info[4], info[5]);
+                lineNum++;
+                continue;
+                    }
+            
+                System.err.printf("%s, %8s, %8s, %9s, %16s,  %10s     skip\n",
+                info[0], info[1], info[2], info[3], info[4], info[5]);
+                lineNum++;
+                continue;
+            }
+        } 
+        
     }
     
     private Scanner getValidFileScanner() {
@@ -46,17 +99,25 @@ public class Booking
         Scanner input = new Scanner(System.in);
         Scanner scan = null;
         File bookingFile = null;
+        String fileName;
+        String readfrom = null;
+        //String readfrom = currentPath + filename;
 
         while (true) {
             try {
+                
+                
                 if (bookingFile == null) {
-                    bookingFile = new File(currentPath + "bookings.txt");
+                    bookingFile = new File(currentPath + "booking_errors.txt");
+                    System.out.println();
                 } else {
                     System.out.println("Enter correct file name =");
-                    String fileName = input.next();
+                    fileName = input.next();
+                    readfrom = currentPath + fileName;
                     bookingFile = new File(currentPath + fileName);
                 }
                 scan = new Scanner(bookingFile);
+                System.out.println("\nRead from " + readfrom);
                 break; 
             } catch (Exception e) {
                 System.out.println("\n" + e);
@@ -92,30 +153,89 @@ public class Booking
         return col;
     }
     
-    public double calculateTotalRoom(String room, String days) {
+    public double calculateTotalRoom(String room, String days) 
+            throws InvalidFormatException, InvalidInputException {
+        
         String numberRoom[] = room.split(":");
         double amountRoom[] = new double[3];
         double totalRoomPrice = 0;
-        double amountDay = Double.parseDouble(days);
-
-                
+        double amountDay;
+        try
+        {
+            amountDay = Double.parseDouble(days);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new InvalidFormatException("For days: \"" + days + "\"");
+        }
+        if (amountDay < 0) throw new InvalidInputException("For days: \"" + days + "\"");
+        if (amountDay < 1) throw new NumberFormatException("For input string: \"" + days + "\"");
+        
+        
+        if (numberRoom.length != 3) throw new InvalidFormatException("For rooms: \"" + room + "\"");       
         for(int i = 0; i < numberRoom.length; i++){
-            amountRoom[i] = Double.parseDouble(numberRoom[i]);
+            
+            try
+            {
+                amountRoom[i] = Double.parseDouble(numberRoom[i]);
+            }
+            catch(NumberFormatException e) 
+            {
+                throw new InvalidFormatException("For rooms: \"" + room + "\"");
+            }
+            if (amountRoom[i] < 0) {
+            throw new InvalidInputException("For rooms: \"" + room + "\"");
+            }
+            
             totalRoomPrice += amountRoom[i] * (items.get(i)).getRoom() * amountDay;
         }
         
         return totalRoomPrice;
     }
     
-    public double calculateTotalMeal(String meal, String days, String person) {
+    public double calculateTotalMeal(String meal, String days, String person) 
+            throws InvalidFormatException, InvalidInputException {
         String numberMeal[] = meal.split(":");
         double amountMeal[] = new double[3];
         double totalMealPrice = 0;
-        double amountDay = Double.parseDouble(days);
-        double amountPerson = Double.parseDouble(person);
-                
+        double amountDay;
+        try
+        {
+            amountDay = Double.parseDouble(days);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new InvalidFormatException("For days: \"" + days + "\"");
+        }
+        if (amountDay < 1) throw new InvalidInputException("For days: \"" + days + "\"");
+        
+        int amountPerson; 
+        try
+        {
+            amountPerson = Integer.parseInt(person);
+        }
+        catch (NumberFormatException e) {
+        throw new NumberFormatException("For input string: \"" + person + "\"");
+}
+        
+     
+        if (numberMeal.length != 3) throw new InvalidFormatException("For meals: \"" + meal + "\"");
+
         for(int i = 0; i < numberMeal.length; i++){
-            amountMeal[i] = Double.parseDouble(numberMeal[i]);
+            
+            try
+            {
+                amountMeal[i] = Double.parseDouble(numberMeal[i]);
+            }
+               catch (NumberFormatException e)
+                    {
+                        throw new InvalidFormatException("For meals: \"" + meal + "\"");
+                    }
+               if (amountMeal[i] < 0)
+               {
+                   throw new InvalidInputException("For meals: \"" + meal + "\"");
+               }
+             
             totalMealPrice += amountMeal[i] * (items.get(i + 3)).getMeal() * amountDay * amountPerson;
         }
         
@@ -146,10 +266,30 @@ public class Booking
         System.out.printf("%13s%-20s =%,14.2f\n", " ", "subtotal", subtotal);
         System.out.printf("%13s%-20s =%,14.2f\n", " ", "discount", discount);
         System.out.printf("%13s%-20s =%,14.2f\n", " ", "total", (subtotal-discount));
+        System.out.println();
         return subtotal-discount;
     }
     
     public List<CustomerTotal> getCustomerSummary() {
         return customerSum;
     }
+    
+    public class InvalidFormatException extends Exception {
+        public InvalidFormatException(String message)
+    {
+        super(message);
+    }
 }
+    public class InvalidInputException extends Exception {
+        public InvalidInputException (String message)
+    {
+        super(message);
+    }  
+}
+    
+    
+}
+
+
+
+

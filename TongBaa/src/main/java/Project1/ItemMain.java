@@ -14,17 +14,37 @@ public class ItemMain {
 //    }
     
     static List<Item> readItem(String filename){
-
-        //String path = "src/main/java/Project1/";
-        String path = "src/main/java/Project1/";
-        File file = new File(path+filename);
-        System.out.println("Read from "+path+filename);
+        
         List<Item> items = new ArrayList<>();
-        try ( Scanner iscan = new Scanner(file) ) {
-            iscan.nextLine();                                   //skip first line
-            while(iscan.hasNext()) {
-                String line = iscan.nextLine(); 
-                String []cols = line.split(","); 
+        String path = "src/main/Java/Project1/";
+        File infile = new File(path + filename);
+        
+        Scanner scanfile;
+        Scanner scannewfilename = new Scanner(System.in);
+        boolean canfind = false;
+        String[] cols;
+        String line;
+        
+        
+        
+        while(!canfind)
+        {
+          
+        try {
+            String readfrom = path + filename;
+            scanfile = new Scanner(infile);
+            canfind = true;
+            System.out.println("Read from " + readfrom);
+            System.out.println();
+            cols = new String[3];
+            if(scanfile.hasNextLine()) scanfile.nextLine(); //header
+            
+            
+
+            while(scanfile.hasNext()) {
+                line = scanfile.nextLine();
+                cols = line.split(","); 
+                
                 String code = cols[0].trim();
                 String name = cols[1].trim();
                 double price = Double.parseDouble( cols[2].trim() );
@@ -40,8 +60,14 @@ public class ItemMain {
             item.printMeal();
         } System.out.println();
         }
-        catch (Exception e) {
-            e.printStackTrace();
+        catch(FileNotFoundException ex)
+        {
+            System.out.println(ex);
+            System.out.println("Enter correct file name = ");
+            filename = scannewfilename.next();
+            System.out.println();
+            infile = new File(path + filename);
+            }
         }
         return items;
     }

@@ -1,9 +1,5 @@
-package Project1;
 
-/**
- *
- * @author phurinutwongwatcharapaiboon
- */
+package Project1;
 
 public class CustomerTotal{
     public String customerName;

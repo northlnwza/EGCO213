@@ -1,12 +1,9 @@
+
 package Project1;
 
 import static Project1.ItemMain.readItem;
 import java.io.*;
 import java.util.*;
-/**
- *
- * @thanakrit 6713118 
- */
 
 //
 //class CBooking
@@ -81,7 +78,7 @@ class Customer
 	public	ArrayList<Record> rec;
         
 
-	public	void summary()
+	public	void summary() throws Booking.InvalidFormatException
 	{
 		int	i;
 		
@@ -95,7 +92,7 @@ class Customer
 			i++;
 		}
 	}
-	public	void getcus()
+	public	void getcus() throws Booking.InvalidFormatException
 	{
 		int	i;
 		int	j;
@@ -211,7 +208,7 @@ class Customer
 //			}
 //		}
 //	}
-        public ArrayList<CustomerTotal> gettotalamount()
+        public ArrayList<CustomerTotal> gettotalamount() throws Booking.InvalidFormatException
         {
                 List<CustomerTotal> customerSum;
                 
@@ -283,7 +280,7 @@ class Customer
 
 public class Main 
 {
-	public	static void main(String[] args)
+	public	static void main(String[] args) throws Booking.InvalidFormatException
 	{
 		Customer	C;
                 

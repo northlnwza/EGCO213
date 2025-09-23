@@ -30,7 +30,7 @@ public class Discount {
         
         String path = "src/main/Java/Project1/";
         File infile = new File(path + filename);
-        String readfrom = path + filename;
+        
         Scanner scanfile;
         Scanner scannewfilename = new Scanner(System.in);
         boolean canfind = false;
@@ -40,6 +40,7 @@ public class Discount {
         while(!canfind)
         try
         {
+            String readfrom = path + filename;
             scanfile = new Scanner(infile);
             canfind = true;
             System.out.println("Read from " + readfrom);
@@ -74,3 +75,4 @@ public class Discount {
     
     
 }
+
